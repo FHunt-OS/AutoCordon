@@ -6,7 +6,7 @@ sample_roads = pkl.load(open(r"tests\data\sample_roads.pickle", "rb"))
 sample_centre = (442500, 112573)
 
 
-def test_cordon():
+def test_get_roads_crossing_cordon():
     test_variables = 'coords, distance, roads, expected_result'
     test_data = [
         param((0, 0),

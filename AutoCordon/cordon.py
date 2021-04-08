@@ -4,7 +4,7 @@ from pygeos.predicates import crosses
 import numpy as np
 
 
-def cordon(coords, distance, roads):
+def get_roads_crossing_cordon(coords, distance, roads):
     basic_cordon = buffer(points(coords), distance)
     road_lines = [linestrings(road) for road in roads.values()]
     road_closures = crosses(basic_cordon, road_lines)
