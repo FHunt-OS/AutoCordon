@@ -12,6 +12,10 @@ class TestCordon:
 
         # Act
         closed_roads = cordon(coords, distance, roads)
+        closed_roads.sort()
+        expected_result.sort()
+        print(closed_roads)
+        print(expected_result)
 
         # Assert
         assert (closed_roads == expected_result).all()
