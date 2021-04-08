@@ -14,4 +14,4 @@ class TestCordon:
         closed_roads = cordon(coords, distance, roads)
 
         # Assert
-        assert closed_roads == expected_result
+        assert (closed_roads == expected_result).all()
