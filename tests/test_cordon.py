@@ -1,8 +1,7 @@
+import numpy as np
 import pytest
-from AutoCordon.cordon import (get_road_closure_locations,
-                               get_roads_crossing_cordon)
-from pygeos.constructive import normalize
-from pygeos.predicates import equals_exact
+from AutoCordon.cordon import get_road_closure_locations
+from pygeos.geometry import get_x, get_y
 
 from tests.data import cordon_data as data
 
@@ -10,30 +9,18 @@ from tests.data import cordon_data as data
 @pytest.mark.unit
 class TestCordon:
 
-    @pytest.mark.parametrize(*data.test_get_roads_crossing_cordon())
-    def test_get_roads_crossing_cordon(self, basic_cordon, roads,
-                                       expected_result):
-        # Arrange
-
-        # Act
-        closed_roads = get_roads_crossing_cordon(basic_cordon, roads)
-        closed_roads.sort()
-        expected_result.sort()
-
-        # Assert
-        assert (closed_roads == expected_result).all()
-
     @pytest.mark.parametrize(*data.test_get_road_closure_locations())
-    def test_get_road_closure_locations(self, basic_cordon,
-                                        roads_crossing_cordon,
+    def test_get_road_closure_locations(self, coords, distance, roads,
                                         expected_result):
         # Arrange
 
         # Act
-        closure_locations = get_road_closure_locations(basic_cordon,
-                                                       roads_crossing_cordon)
+        closure_locations = get_road_closure_locations(coords, distance, roads)
 
         # Assert
-        assert equals_exact(normalize(closure_locations),
-                            normalize(expected_result),
-                            tolerance=0.0001).all()
+        closure_locations_x = np.round(get_x(closure_locations), 2)
+        closure_locations_y = np.round(get_y(closure_locations), 2)
+        closure_coords = set(list(zip(closure_locations_x,
+                                      closure_locations_y)))
+
+        assert closure_coords == expected_result
