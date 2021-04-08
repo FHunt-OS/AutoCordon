@@ -1,8 +1,9 @@
 from pytest import param
 import numpy as np
 import pickle as pkl
+from tests.data.dummy_roads import dummy_roads
 
-sample_roads = pkl.load(open(r"tests\data\sample_roads.pickle", "rb"))
+sample_roads = pkl.load(open(r"tests\data\test_roads.pickle", "rb"))
 sample_centre = (442500, 112573)
 
 
@@ -59,6 +60,24 @@ def test_get_roads_crossing_cordon():
                         "osgb4000000023282967",
                         "osgb4000000023282960"]),
               id='sample_roads, 100m'
+              ),
+        param((2, 2),
+              0.5,
+              {fid: road for fid, road in enumerate(dummy_roads)},
+              np.array([0, 1, 2, 3]),
+              id='centre dummy_roads'
+              ),
+        param((2, 2),
+              1.1,
+              {fid: road for fid, road in enumerate(dummy_roads)},
+              np.array([4, 5, 6, 7]),
+              id='ring dummy_roads'
+              ),
+        param((2, 2),
+              1.5,
+              {fid: road for fid, road in enumerate(dummy_roads)},
+              np.array([8, 9, 10, 11]),
+              id='spoke dummy_roads'
               )
     ]
     return test_variables, test_data
