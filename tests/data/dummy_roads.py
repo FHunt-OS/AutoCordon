@@ -29,8 +29,8 @@ if __name__ == "__main__":
 
     road_linestrings = [LineString(road) for road in dummy_roads]
     dummy_roads = gpd.GeoDataFrame({"geometry": road_linestrings,
-                      "id": range(len(dummy_roads))},
-                     crs='epsg:27700')
+                                    "id": range(len(dummy_roads))},
+                                   crs='epsg:27700')
     fig, ax = plt.subplots()
     dummy_roads.plot(ax=ax)
     dummy_roads.iloc[[5, 4, 2, 1, 10, 9, 6, 7]].plot(ax=ax, color='r')
