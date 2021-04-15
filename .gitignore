@@ -108,10 +108,10 @@ venv.bak/
 .db
 
 # data
-data/
 *.geojson
 *.json
 *.csv
+*.pickle
 
 # config
-*.ini
+config.ini
