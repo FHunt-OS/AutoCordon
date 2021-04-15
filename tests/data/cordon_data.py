@@ -2,6 +2,7 @@ from pytest import param
 from tests.data.dummy_roads import centre_crossroads, dummy_roads
 from pygeos.creation import points
 
+
 def test_get_road_closure_locations():
     test_variables = 'coords, distance, roads, expected_result'
     test_data = [
