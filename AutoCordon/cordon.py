@@ -24,13 +24,20 @@ def get_road_closure_locations(centre_coord, distance, roads):
     basic_cordon = get_basic_cordon(centre_coord, distance)
     prepare(roads)
     intersecting_roads = intersection(roads, basic_cordon)
-    print("intersection", intersecting_roads)
     return get_intersecting_points(intersecting_roads)
 
 
 def split_roads_with_cordon(centre_coord, distance, roads):
-    roads_gdf = gpd.GeoDataFrame({"geometry": roads, "road_id": range(len(roads))})
-    cordon_gdf = gpd.GeoDataFrame({"geometry": [get_basic_cordon(centre_coord, distance)], "cordon_id": ["cordon"]})
-    overlay = gpd.overlay(roads_gdf, cordon_gdf, how="union", keep_geom_type=False).explode().reset_index(drop=True)
-    overlay_bool = (overlay.geometry.geom_type == "LineString") & (overlay["cordon_id"] != "cordon")
+    roads_gdf = gpd.GeoDataFrame({"geometry": roads,
+                                  "road_id": range(len(roads))})
+    cordon = get_basic_cordon(centre_coord, distance)
+    cordon_gdf = gpd.GeoDataFrame({"geometry": [cordon],
+                                   "cordon_id": ["cordon"]})
+    overlay = gpd.overlay(roads_gdf, cordon_gdf, how="union",
+                          keep_geom_type=False).explode()
+    overlay.reset_index(drop=True, inplace=True)
+    is_linestring = overlay.geometry.geom_type == "LineString"
+    is_not_cordon = overlay["cordon_id"] != "cordon"
+    overlay_bool = is_linestring & is_not_cordon
     return from_shapely(overlay[overlay_bool].geometry)
+
