@@ -41,15 +41,15 @@ def test_get_road_closure_locations():
     return test_variables, test_data
 
 
-def test_get_cordon_graph():
+def test_split_roads_with_cordon():
     test_variables = 'coords, distance, roads, expected_result'
     test_data = [
         param((2, 2),
               0.5,
               centre_crossroads,
               linestrings([
-                        [(2, 2), (2, 0.5)],
-                        [(2, 0.5), (2, 1)],
+                        [(2, 2), (2, 1.5)],
+                        [(2, 1.5), (2, 1)],
                         [(2, 2), (2.5, 2)],
                         [(2.5, 2), (3, 2)],
                         [(2, 2), (2, 2.5)],

@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from AutoCordon.cordon import get_road_closure_locations, get_cordon_graph
+from AutoCordon.cordon import get_road_closure_locations, split_roads_with_cordon
 from pygeos.coordinates import get_coordinates
 
 from tests.data import cordon_data as data
@@ -21,14 +21,15 @@ class TestCordon:
         assert np.isin(np.round(get_coordinates(expected_result), 2),
                        np.round(get_coordinates(closure_locations), 2)).all()
 
-    @pytest.mark.parametrize(*data.test_get_cordon_graph())
-    def test_get_cordon_graph(self, coords, distance, roads,
-                                        expected_result):
+    @pytest.mark.parametrize(*data.test_split_roads_with_cordon())
+    def test_split_roads_with_cordon(self, coords, distance, roads,
+                              expected_result):
         # Arrange
 
         # Act
-        cordon_graph = get_cordon_graph(coords, distance, roads)
-
+        cordon_graph = split_roads_with_cordon(coords, distance, roads)
+        print(cordon_graph)
+        print(expected_result)
         # Assert
         assert np.isin(np.round(get_coordinates(expected_result), 2),
                        np.round(get_coordinates(cordon_graph), 2)).all()
