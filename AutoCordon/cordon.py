@@ -1,5 +1,5 @@
 from pygeos.constructive import buffer
-from pygeos.creation import points, prepare
+from pygeos.creation import points, prepare, linestrings
 from pygeos.set_operations import intersection
 from pygeos.geometry import get_exterior_ring, get_dimensions, get_parts
 
@@ -20,3 +20,16 @@ def get_road_closure_locations(coords, distance, roads):
     prepare(roads)
     intersecting_roads = intersection(roads, basic_cordon)
     return get_intersecting_points(intersecting_roads)
+
+
+def get_cordon_graph(centre_coord, distance, roads):
+    return linestrings([
+                        [(2, 2), (2, 0.5)],
+                        [(2, 0.5), (2, 1)],
+                        [(2, 2), (2.5, 2)],
+                        [(2.5, 2), (3, 2)],
+                        [(2, 2), (2, 2.5)],
+                        [(2, 2.5), (2, 3)],
+                        [(2, 2), (1.5, 2)],
+                        [(1.5, 2), (1, 2)]
+                  ])

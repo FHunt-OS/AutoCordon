@@ -1,6 +1,6 @@
 from pytest import param
 from tests.data.dummy_roads import centre_crossroads, dummy_roads
-from pygeos.creation import points
+from pygeos.creation import points, linestrings
 
 
 def test_get_road_closure_locations():
@@ -37,5 +37,27 @@ def test_get_road_closure_locations():
                       (3.0, 2.74)]),
               id='dummy_roads distance 1.25'
               )
+        ]
+    return test_variables, test_data
+
+
+def test_get_cordon_graph():
+    test_variables = 'coords, distance, roads, expected_result'
+    test_data = [
+        param((2, 2),
+              0.5,
+              centre_crossroads,
+              linestrings([
+                        [(2, 2), (2, 0.5)],
+                        [(2, 0.5), (2, 1)],
+                        [(2, 2), (2.5, 2)],
+                        [(2.5, 2), (3, 2)],
+                        [(2, 2), (2, 2.5)],
+                        [(2, 2.5), (2, 3)],
+                        [(2, 2), (1.5, 2)],
+                        [(1.5, 2), (1, 2)]
+                  ]),
+              id='centre_crossroads distance 0.5'
+              ),
         ]
     return test_variables, test_data
