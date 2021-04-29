@@ -1,12 +1,10 @@
-from pygeos.constructive import buffer
-from pygeos.creation import points, prepare, linestrings
-from pygeos.set_operations import intersection, difference, intersection_all
-from pygeos.geometry import get_exterior_ring, get_dimensions, get_parts
-from pygeos.predicates import intersects
-import numpy as np
 import geopandas as gpd
-import matplotlib.pyplot as plt
+from pygeos.constructive import buffer
+from pygeos.creation import points, prepare
+from pygeos.geometry import get_dimensions, get_exterior_ring, get_parts
 from pygeos.io import from_shapely
+from pygeos.predicates import is_empty
+from pygeos.set_operations import difference, intersection
 
 
 def get_basic_cordon(centre_coord, distance):
@@ -41,3 +39,24 @@ def split_roads_with_cordon(centre_coord, distance, roads):
     overlay_bool = is_linestring & is_not_cordon
     return from_shapely(overlay[overlay_bool].geometry)
 
+
+def remove_roads_within_cordon(centre_coord, distance, roads):
+    diff = difference(roads, buffer(points(centre_coord), distance))
+    return diff[~is_empty(diff)]
+
+
+def get_buffer_zone(centre_coord, min_distance, max_distance):
+    min_cordon = buffer(points(centre_coord), min_distance)
+    max_cordon = buffer(points(centre_coord), max_distance)
+    return difference(max_cordon, min_cordon)
+
+
+def get_non_empty_linestrings(geometries):
+    non_empty = geometries[~is_empty(geometries)]
+    return non_empty[get_dimensions(non_empty) == 1]
+
+
+def extract_closure_candidates(centre_coord, min_distance, max_distance, roads):
+    buffer_zone = get_buffer_zone(centre_coord, min_distance, max_distance)
+    candidates = intersection(roads, buffer_zone)
+    return get_non_empty_linestrings(candidates)

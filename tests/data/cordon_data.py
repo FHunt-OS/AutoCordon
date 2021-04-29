@@ -48,16 +48,43 @@ def test_split_roads_with_cordon():
               0.5,
               centre_crossroads,
               linestrings([
-                        [(2, 2), (2, 1.5)],
                         [(2, 1.5), (2, 1)],
-                        [(2, 2), (2.5, 2)],
                         [(2.5, 2), (3, 2)],
-                        [(2, 2), (2, 2.5)],
                         [(2, 2.5), (2, 3)],
-                        [(2, 2), (1.5, 2)],
                         [(1.5, 2), (1, 2)]
                   ]),
               id='centre_crossroads distance 0.5'
+              ),
+        ]
+    return test_variables, test_data
+
+
+def test_extract_closure_candidates():
+    test_variables = 'centre_coord, min_distance, max_distance, roads, expected_result'
+    test_data = [
+        param((2, 2),
+              0.5,
+              1,
+              centre_crossroads,
+              linestrings([
+                        [(2, 1.5), (2, 1)],
+                        [(2.5, 2), (3, 2)],
+                        [(2, 2.5), (2, 3)],
+                        [(1.5, 2), (1, 2)]
+                  ]),
+              id='centre_crossroads min_dist 0.5, max_dist 1'
+              ),
+        param((2, 2),
+              0.5,
+              1,
+              dummy_roads,
+              linestrings([
+                        [(2, 1.5), (2, 1)],
+                        [(2.5, 2), (3, 2)],
+                        [(2, 2.5), (2, 3)],
+                        [(1.5, 2), (1, 2)]
+                  ]),
+              id='dummy_roads min_dist 0.5, max_dist 1'
               ),
         ]
     return test_variables, test_data
