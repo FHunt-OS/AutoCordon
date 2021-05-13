@@ -1,15 +1,16 @@
 import pytest
-from AutoCordon.cordon_graph import make_buffer_zone_graph
+from AutoCordon.buffer_zone_graph import make_buffer_zone_graph
 
 from networkx.algorithms.isomorphism import is_isomorphic
-from tests.data import cordon_graph_data as data
+from tests.data import buffer_zone_graph_data as data
 
 
 @pytest.mark.unit
 class TestCordonGraph:
 
     @pytest.mark.parametrize(*data.test_make_buffer_zone_graph())
-    def test_make_buffer_zone_graph(self, centre_coords, roads, expected_result):
+    def test_make_buffer_zone_graph(self, centre_coords, roads,
+                                    expected_result):
         # Arrange
 
         # Act
