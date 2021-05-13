@@ -5,7 +5,6 @@ from AutoCordon.cordon import (extract_closure_candidates,
                                split_roads_with_cordon)
 from pygeos.coordinates import get_coordinates
 from pygeos.predicates import equals_exact
-from pygeos.creation import multilinestrings
 
 from tests.data import cordon_data as data
 
@@ -25,9 +24,10 @@ class TestCordon:
         assert np.isin(np.round(get_coordinates(expected_result), 2),
                        np.round(get_coordinates(closure_locations), 2)).all()
 
+
     @pytest.mark.parametrize(*data.test_split_roads_with_cordon())
     def test_split_roads_with_cordon(self, coords, distance, roads,
-                              expected_result):
+                                     expected_result):
         # Arrange
 
         # Act
@@ -46,8 +46,6 @@ class TestCordon:
         # Act
         candidates = extract_closure_candidates(centre_coord, min_distance,
                                                 max_distance, roads)
-        print(multilinestrings(candidates))
-        print(multilinestrings(expected_result))
-        print(equals_exact(multilinestrings(candidates), multilinestrings(expected_result), tolerance=0.01))
+
         # Assert
         assert equals_exact(candidates, expected_result, tolerance=0.01).all()

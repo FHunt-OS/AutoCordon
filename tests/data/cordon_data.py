@@ -40,7 +40,6 @@ def test_get_road_closure_locations():
         ]
     return test_variables, test_data
 
-
 def test_split_roads_with_cordon():
     test_variables = 'coords, distance, roads, expected_result'
     test_data = [
