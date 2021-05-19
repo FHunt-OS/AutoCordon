@@ -112,6 +112,14 @@ venv.bak/
 *.json
 *.csv
 *.pickle
+*.shp
+*.prj
+*.dbf
+*.shx
 
 # config
 config.ini
+
+# images
+*.png
+*.fig

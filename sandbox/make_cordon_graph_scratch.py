@@ -4,7 +4,9 @@ from AutoCordon.buffer_zone_graph import get_subgraphs, make_buffer_zone_graph
 from pygeos.io import from_shapely
 import pickle as pkl
 
-roads = gpd.read_file(r"tests\data\sample_roads_soton_centre.geojson")
+# roads = gpd.read_file(r"tests\data\sample_roads_soton_centre.geojson")
+roads = gpd.read_file(r"tests\data\SU_RoadLink.shp")
+
 roads = roads.explode().reset_index(drop=True)
 road_lines = from_shapely(roads.geometry)
 distance = 550
@@ -22,5 +24,5 @@ graph = make_buffer_zone_graph(centre, remaining_roads)
 subgraphs = get_subgraphs(graph, interior_closure_points,
                           exterior_closure_points)
 
-pkl.dump(subgraphs, open("subgraphs.pkl", "wb"))
-pkl.dump(remaining_roads, open("remaining_roads.pkl", "wb"))
+pkl.dump(subgraphs, open("subgraphs_OR.pkl", "wb"))
+pkl.dump(remaining_roads, open("remaining_roads_OR.pkl", "wb"))
