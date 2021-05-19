@@ -2,6 +2,7 @@ import geopandas as gpd
 from AutoCordon.buffer_zone import BufferZone
 from AutoCordon.buffer_zone_graph import get_subgraphs, make_buffer_zone_graph
 from pygeos.io import from_shapely
+import pickle as pkl
 
 roads = gpd.read_file(r"tests\data\sample_roads_soton_centre.geojson")
 roads = roads.explode().reset_index(drop=True)
@@ -20,3 +21,6 @@ exterior_closure_points = bz.get_intersecting_perimeter_points("exterior",
 graph = make_buffer_zone_graph(centre, remaining_roads)
 subgraphs = get_subgraphs(graph, interior_closure_points,
                           exterior_closure_points)
+
+pkl.dump(subgraphs, open("subgraphs.pkl", "wb"))
+pkl.dump(remaining_roads, open("remaining_roads.pkl", "wb"))
