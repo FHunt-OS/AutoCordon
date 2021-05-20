@@ -40,3 +40,19 @@ def get_disconnected_edges(graph):
         else:
             disconnected.extend(g.edges)
     return disconnected
+
+
+def get_closure_edges(graph):
+    removed_edges = []
+    graph_deque = deque([graph.copy()])
+    while len(graph_deque):
+        g = graph_deque.pop()
+        sources, sinks = get_sources_and_sinks(g)
+        if sources and sinks:
+            max_edge = get_max_betweenness_edge(g, sources, sinks)
+            g.remove_edge(*max_edge)
+            removed_edges.append(max_edge)
+            if is_reachable(g, sources, sinks):
+                for component in nx.connected_components(g):
+                    graph_deque.append(g.subgraph(list(component)).copy())
+    return removed_edges
