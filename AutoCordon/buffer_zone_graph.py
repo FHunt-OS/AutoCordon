@@ -42,7 +42,6 @@ def get_subgraphs(graph, interior_closure_points,
     interior_set = set(interior_closure_points)
     exterior_set = set(exterior_closure_points)
     components = nx.connected_components(nx.to_undirected(graph))
-
     subgraphs = {}
     for subgraph_id, component in enumerate(components):
         interior_nodes = interior_set.intersection(component)

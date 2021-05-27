@@ -56,3 +56,12 @@ def get_closure_edges(graph):
                 for component in nx.connected_components(g):
                     graph_deque.append(g.subgraph(list(component)).copy())
     return removed_edges
+
+
+def get_min_closures(graph):
+    closure_edges = get_closure_edges(graph)
+    sources = [node[0] for node in graph.nodes("interior_closure") if node[1]]
+    if len(closure_edges) >= len(sources):
+        closure_edges = graph.edges(sources)
+        print(closure_edges)
+    return closure_edges
