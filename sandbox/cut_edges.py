@@ -31,7 +31,8 @@ def plot_closures(remaining_roads_gdf, starting_edges_gdf,
     sources_gdf.plot(color="r", ax=ax)
     sinks_gdf.plot(color="g", ax=ax)
     final_edges_hybrid_gdf.plot(ax=ax, color="r")
-    final_edges_calc_gdf.plot(ax=ax, color="orange", linestyle="--")
+    # final_edges_calc_gdf.plot(ax=ax, color="orange", linestyle="--")
+    final_edges_calc_gdf.plot(ax=ax, color="r")
     n_final_edges_calc = len(final_edges_calc_gdf)
     n_final_edges_hybrid = len(final_edges_hybrid_gdf)
     outcome = "REDUCTION" if n_final_edges_calc < len(sources_gdf) else "USE DEFAULT"
@@ -81,20 +82,21 @@ def update_data(data, starting_edges, sources, sinks,
     return data
 
 
-def get_all_closures(subgraphs):
+def get_all_closures(subgraphs, inner_graph):
     data_cols = ["starting_edges", "sources", "sinks",
                  "closed_edges_calc", "closed_edges_hybrid"]
     data = {d: {"geometry": [], "subgraph_id": []} for d in data_cols}
     for subgraph_id in subgraphs:
-        graph = nx.Graph(nx.to_undirected(subgraphs[subgraph_id]))
+        graph = nx.Graph(subgraphs[subgraph_id])
         sources, sinks, starting_edges = get_graph_geometry(graph)
 
-        closure_edges_calc = get_closure_edges(graph)
+        closure_edges_calc = get_closure_edges(graph, inner_graph)
         closed_edges_calc = [linestrings(get_coordinates(coords))
                              for coords in closure_edges_calc]
-        closure_edges_hybrid = get_min_closures(graph)
-        closed_edges_hybrid = [linestrings(get_coordinates(coords))
-                               for coords in closure_edges_hybrid]
+        # closure_edges_hybrid = get_min_closures(graph)
+        # closed_edges_hybrid = [linestrings(get_coordinates(coords))
+        #                        for coords in closure_edges_hybrid]
+        closed_edges_hybrid = []
         data = update_data(data, starting_edges, sources, sinks,
                            closed_edges_calc, closed_edges_hybrid,
                            subgraph_id)
