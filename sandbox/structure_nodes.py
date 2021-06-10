@@ -96,6 +96,9 @@ def get_junction_closures(road_lines, centre, distance, distance_max,
         graph.nodes[node]["removable"] = True
     nodes_removable = list(graph.nodes)
     graph.add_edges_from(non_removable_edges, removable=False)
+    for node in graph:
+        if not graph.nodes[node]:
+            graph.nodes[node]["removable"] = False
     graph.nodes.data("removable", default=False)
     # print(graph.nodes(data=True))
 
@@ -121,12 +124,10 @@ def get_junction_closures(road_lines, centre, distance, distance_max,
                                                     g_max_nodes,
                                                     g_inner_nodes)
 
-                max_betweeness = 0
-                for node, score in betweeness.items():
-                    if g.nodes[node]:
-                        if score >= max_betweeness:
-                            max_betweeness = score
-                            max_node = node
+
+                betweeness = {node: betweeness[node] for node in g.nodes if g.nodes[node]["removable"]}
+                max_node = max(list(betweeness.items()), key=lambda x: x[1])[0]
+                # TODO if join max scores, choose closest to centre?
 
                 g.remove_node(max_node)
                 removed_nodes.append(max_node)
@@ -141,7 +142,7 @@ def get_junction_closures(road_lines, centre, distance, distance_max,
 
     # removed_lines = [pygeos.linestrings(pygeos.get_coordinates(coords))
     #                 for coords in removed_edges]
-    return removed_nodes, nodes_removable
+    return removed_nodes, nodes_removable, inner_nodes
     starting_lines = [pygeos.linestrings(pygeos.get_coordinates(coords))
                     for coords in removable_edges]
     removed_lines_gdf = gpd.GeoDataFrame({"geometry": removed_lines})
