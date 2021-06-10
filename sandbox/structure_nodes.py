@@ -29,7 +29,7 @@ from AutoCordon.buffer_zone_graph import get_line_ends
 from AutoCordon.prune_edges import is_reachable
 import networkx as nx
 from networkx.algorithms.centrality import edge_current_flow_betweenness_centrality_subset as flow_betweenness
-from networkx.algorithms.centrality import edge_betweenness_centrality_subset
+from networkx.algorithms.centrality import betweenness_centrality_subset, current_flow_betweenness_centrality_subset
 import geopandas as gpd
 from pygeos.io import from_shapely
 import matplotlib.pyplot as plt
@@ -49,8 +49,8 @@ import math
 # roads = roads.explode().reset_index(drop=True)
 # road_lines = from_shapely(roads.geometry)
 
-def get_road_closures(road_lines, centre, distance, distance_max,
-                      wider_factor, edge_metric_func=edge_betweenness_centrality_subset):
+def get_junction_closures(road_lines, centre, distance, distance_max,
+                      wider_factor, edge_metric_func=betweenness_centrality_subset):
 
     centre_point = pygeos.points(centre)
     middle_hole_buffer = pygeos.buffer(centre_point, distance)
@@ -92,12 +92,17 @@ def get_road_closures(road_lines, centre, distance, distance_max,
 
     graph = nx.Graph()
     graph.add_edges_from(removable_edges, removable=True)
+    for node in graph:
+        graph.nodes[node]["removable"] = True
+    nodes_removable = list(graph.nodes)
     graph.add_edges_from(non_removable_edges, removable=False)
+    graph.nodes.data("removable", default=False)
+    # print(graph.nodes(data=True))
 
     subgraphs = [graph.subgraph(list(component)).copy()
                 for component in nx.connected_components(graph)]
-
-    removed_edges = []
+    
+    removed_nodes = []
     graph_deque = deque(subgraphs)
     while len(graph_deque):
         g = graph_deque.pop()
@@ -117,22 +122,26 @@ def get_road_closures(road_lines, centre, distance, distance_max,
                                                     g_inner_nodes)
 
                 max_betweeness = 0
-                for edge, score in betweeness.items():
-                    if g.edges[edge[0], edge[1]]["removable"]:
+                for node, score in betweeness.items():
+                    if g.nodes[node]:
                         if score >= max_betweeness:
                             max_betweeness = score
-                            max_edge = edge
+                            max_node = node
 
-                g.remove_edge(*max_edge)
-                removed_edges.append(max_edge)
+                g.remove_node(max_node)
+                removed_nodes.append(max_node)
+                if max_node in g_max_nodes:
+                    g_max_nodes.remove(max_node)
+                if max_node in g_inner_nodes:
+                    g_inner_nodes.remove(max_node)
 
                 if is_reachable(g, g_max_nodes, g_inner_nodes):
                     for component in nx.connected_components(g):
                         graph_deque.append(g.subgraph(list(component)).copy())
 
-    removed_lines = [pygeos.linestrings(pygeos.get_coordinates(coords))
-                    for coords in removed_edges]
-    return removed_lines, lines_removable
+    # removed_lines = [pygeos.linestrings(pygeos.get_coordinates(coords))
+    #                 for coords in removed_edges]
+    return removed_nodes, nodes_removable
     starting_lines = [pygeos.linestrings(pygeos.get_coordinates(coords))
                     for coords in removable_edges]
     removed_lines_gdf = gpd.GeoDataFrame({"geometry": removed_lines})
