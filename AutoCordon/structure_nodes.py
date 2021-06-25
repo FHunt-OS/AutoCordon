@@ -60,7 +60,7 @@ def get_junction_closures(road_lines, centre, distance, distance_max,
     closable_lines = pygeos.intersection(road_lines, closable_ring_buffer)
     lines_removable = pygeos.get_parts(closable_lines[~pygeos.is_empty(closable_lines)])
     closable_lines_gdf = gpd.GeoDataFrame({"geometry": lines_removable})
-    closable_lines_gdf.to_file(f"closable_lines.geojson", driver="GeoJSON")
+    # closable_lines_gdf.to_file(f"closable_lines.geojson", driver="GeoJSON")
     removable_edges = list(zip(*get_line_ends(lines_removable)))
 
     inner_nodes = pygeos.intersection(pygeos.get_interior_ring(closable_ring_buffer, 0), road_lines)
