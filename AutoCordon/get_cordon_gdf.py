@@ -5,7 +5,11 @@ from AutoCordon.structure_nodes import get_junction_closures
 
 
 def get_cordon_layers(road_lines, centre, distance, distance_max, wider_factor):
-    removals, candidates, default_closures = get_junction_closures(road_lines, centre, distance, distance_max, wider_factor)
+    removals, candidates, default_closures = get_junction_closures(road_lines,
+                                                                   centre,
+                                                                   distance,
+                                                                   distance_max,
+                                                                   wider_factor)
 
     mls_road_lines = pyg.multilinestrings(road_lines)
     # display_roads = pyg.clip_by_rect(mls_road_lines, *pyg.bounds(pyg.buffer(pyg.points(*centre), distance_max + 500)))
