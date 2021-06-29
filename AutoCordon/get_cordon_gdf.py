@@ -11,7 +11,7 @@ def get_cordon_layers(road_lines, centre, distance, distance_max, wider_factor):
                                                                    distance_max,
                                                                    wider_factor)
 
-    mls_road_lines = pyg.multilinestrings(road_lines)
+    # mls_road_lines = pyg.multilinestrings(road_lines)
     # display_roads = pyg.clip_by_rect(mls_road_lines, *pyg.bounds(pyg.buffer(pyg.points(*centre), distance_max + 500)))
     
     print("removals", len(removals))
