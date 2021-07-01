@@ -37,6 +37,8 @@ from collections import deque
 import pygeos
 import numpy as np
 import math
+from AutoCordon.get_roads import get_roads
+from AutoCordon.manipulate_geometries import intersect
 
 # roads_path = r"tests\data\SU_RoadLink.shp"
 # centre = (442000, 112000)
@@ -51,7 +53,9 @@ import math
 
 def get_junction_closures(road_lines, centre, distance, distance_max,
                       wider_factor, edge_metric_func=betweenness_centrality_subset):
-
+    roads = get_roads(centre, distance_max + 10)
+    road_lines = pygeos.from_shapely(roads.geometry)
+    
     centre_point = pygeos.points(centre)
     middle_hole_buffer = pygeos.buffer(centre_point, distance)
     max_closure_buffer = pygeos.buffer(centre_point, distance_max)
@@ -66,8 +70,14 @@ def get_junction_closures(road_lines, centre, distance, distance_max,
     inner_nodes = pygeos.intersection(pygeos.get_interior_ring(closable_ring_buffer, 0), road_lines)
     inner_nodes = pygeos.get_parts(inner_nodes[~pygeos.is_empty(inner_nodes)])
 
-    max_nodes = pygeos.intersection(pygeos.get_exterior_ring(closable_ring_buffer), road_lines)
-    max_nodes = pygeos.get_parts(max_nodes[~pygeos.is_empty(max_nodes)])
+    # max_nodes = pygeos.intersection(pygeos.get_exterior_ring(closable_ring_buffer), road_lines)
+    # max_nodes = pygeos.get_parts(max_nodes[~pygeos.is_empty(max_nodes)])
+    
+    inner_ring = pygeos.get_interior_ring(closable_ring_buffer, 0)
+    inner_nodes = intersect(inner_ring, road_lines)
+    
+    max_ring = pygeos.get_exterior_ring(closable_ring_buffer)
+    max_nodes = intersect(max_ring, road_lines)
 
 
     # f, ax = plt.subplots(2, math.ceil(len(wider_factor) / 2), sharex=True, sharey=True)
