@@ -27,7 +27,6 @@ def get_geoms(lines, centre, distance, distance_max):
                          "hole": hole}}
 
 
-
 def get_intersecting_points(lines, ring):
     points = overlay_gdf_with_geom(lines, ring)
     ring_points = list(set(zip(points.geometry.x,

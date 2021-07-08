@@ -5,7 +5,7 @@ import pygeos as pyg
 from AutoCordon.get_roads import get_roads
 from AutoCordon.graph_info import get_edge_info
 from AutoCordon.manipulate_geometries import get_geoms, overlay_gdf_with_geom
-from AutoCordon.structure_nodes_copy_copy import get_removals
+from AutoCordon.remove_nodes import get_removals
 
 
 def get_cordon_layers(centre, distance, distance_max):
