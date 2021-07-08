@@ -15,3 +15,14 @@ def get_edge_info_for_node(graph, node, info_names, valid_type=str,
                     break
             info.append(" " + edge_info)
     return info
+
+
+def get_edge_info(graph, nodes, info_names,
+                  valid_type=str, invalid_fill="Unknown"):
+    info = []
+    for node in nodes:
+        edge_info = get_edge_info_for_node(graph, node,
+                                           info_names, valid_type,
+                                           invalid_fill)
+        info.append(list(set(edge_info)))
+    return info
