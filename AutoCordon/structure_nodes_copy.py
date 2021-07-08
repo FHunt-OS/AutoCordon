@@ -25,20 +25,14 @@ list of edges to remove
 
 
 """
-from AutoCordon.buffer_zone_graph import get_line_ends
 from AutoCordon.prune_edges import is_reachable
 import networkx as nx
-from networkx.algorithms.centrality import edge_current_flow_betweenness_centrality_subset as flow_betweenness
-from networkx.algorithms.centrality import betweenness_centrality_subset, current_flow_betweenness_centrality_subset
-import geopandas as gpd
-from pygeos.io import from_shapely
-import matplotlib.pyplot as plt
+from networkx.algorithms.centrality import betweenness_centrality_subset
+
 from collections import deque
 import pygeos as pyg
-import numpy as np
-import math
 from AutoCordon.get_roads import get_roads
-from AutoCordon.manipulate_geometries import intersect, get_donut, overlay_gdf_with_geom
+from AutoCordon.manipulate_geometries import overlay_gdf_with_geom
 import momepy as mm
 
 
@@ -62,9 +56,9 @@ def get_junction_closures(centre, distance, distance_max,
     
     donut = pyg.polygons(shell_ring, holes=[hole_ring])
     donut_roads = overlay_gdf_with_geom(roads, donut)
-    donut_roads_simplified = mm.remove_false_nodes(donut_roads)
 
-    graph = mm.gdf_to_nx(donut_roads_simplified)
+    graph = mm.gdf_to_nx(donut_roads)
+    # graph = mm.gdf_to_nx(donut_roads_simplified)
     subgraphs = [graph.subgraph(list(component)).copy()
                 for component in nx.connected_components(graph)]
     

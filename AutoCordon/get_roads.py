@@ -22,4 +22,4 @@ def get_roads(centre_coord, max_distance):
                                                     srs=SRS,
                                                     allow_premium=True)
         features.extend(payload["features"])
-    return gpd.GeoDataFrame.from_features(features, crs=SRS)
+    return gpd.GeoDataFrame.from_features(features, crs=SRS).explode().reset_index(drop=True)
