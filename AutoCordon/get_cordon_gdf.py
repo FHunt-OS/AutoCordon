@@ -20,13 +20,18 @@ def get_cordon_layers(centre, distance, distance_max, OS_API_KEY):
     removal_names = get_edge_info(graph, removals, ["Name", "Number"],
                                   invalid_fill="Unnamed Road")
 
-    points = gpd.GeoDataFrame({"geometry": pyg.points(removals + [centre]),
-                               "type": ["removal"] * len(removals) + ["centre"],
-                               "names": removal_names + [""]},
+    all_points = pyg.points(removals + [centre])
+    points_types = ["removal"] * len(removals) + ["centre"]
+    points_names = removal_names + [""]
+    points = gpd.GeoDataFrame({"geometry": all_points,
+                               "type": points_types,
+                               "names": points_names},
                               crs="EPSG:27700").to_crs("EPSG:4326")
+
     min_cordon = gpd.GeoDataFrame({"geometry": [geoms["polygons"]["hole"]],
                                    "type": ["min_cordon"]},
                                   crs="EPSG:27700").to_crs("EPSG:4326")
+
     max_cordon = gpd.GeoDataFrame({"geometry": [geoms["polygons"]["donut"]],
                                    "type": ["max_cordon"]},
                                   crs="EPSG:27700").to_crs("EPSG:4326")
