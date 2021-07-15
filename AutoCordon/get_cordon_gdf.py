@@ -8,8 +8,8 @@ from AutoCordon.manipulate_geometries import get_geoms, overlay_gdf_with_geom
 from AutoCordon.remove_nodes import get_removals
 
 
-def get_cordon_layers(centre, distance, distance_max):
-    roads = get_roads(centre, distance_max + 10)
+def get_cordon_layers(centre, distance, distance_max, OS_API_KEY):
+    roads = get_roads(centre, distance_max + 10, OS_API_KEY)
     geoms = get_geoms(roads, centre, distance, distance_max)
     donut_roads = overlay_gdf_with_geom(roads, geoms["polygons"]["donut"])
     graph = mm.gdf_to_nx(donut_roads)
@@ -23,13 +23,13 @@ def get_cordon_layers(centre, distance, distance_max):
     points = gpd.GeoDataFrame({"geometry": pyg.points(removals + [centre]),
                                "type": ["removal"] * len(removals) + ["centre"],
                                "names": removal_names + [""]},
-                              crs="EPSG:27700").to_crs("EPSG:4326").to_json()
+                              crs="EPSG:27700").to_crs("EPSG:4326")
     min_cordon = gpd.GeoDataFrame({"geometry": [geoms["polygons"]["hole"]],
                                    "type": ["min_cordon"]},
-                                  crs="EPSG:27700").to_crs("EPSG:4326").to_json()
+                                  crs="EPSG:27700").to_crs("EPSG:4326")
     max_cordon = gpd.GeoDataFrame({"geometry": [geoms["polygons"]["donut"]],
                                    "type": ["max_cordon"]},
-                                  crs="EPSG:27700").to_crs("EPSG:4326").to_json()
-    return {"closures": points,
-            "min_cordon": min_cordon,
-            "max_cordon": max_cordon}
+                                  crs="EPSG:27700").to_crs("EPSG:4326")
+    return {"closures": points.to_json(),
+            "min_cordon": min_cordon.to_json(),
+            "max_cordon": max_cordon.to_json()}
