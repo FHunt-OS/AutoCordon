@@ -10,13 +10,13 @@ def overlay_gdf_with_geom(gdf, geom):
 
 
 def get_geoms(lines, centre, distance, distance_max):
-    point = pyg.points(centre)
+    centre = pyg.from_shapely(centre)
 
-    shell = pyg.buffer(point, distance_max)
+    shell = pyg.buffer(centre, distance_max)
     shell_ring = pyg.get_exterior_ring(shell)
     shell_nodes = get_intersecting_points(lines, shell_ring)
 
-    hole = pyg.buffer(point, distance)
+    hole = pyg.buffer(centre, distance)
     hole_ring = pyg.get_exterior_ring(hole)
     hole_nodes = get_intersecting_points(lines, hole_ring)
 
