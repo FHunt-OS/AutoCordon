@@ -38,3 +38,24 @@ def get_cordon_layers(centre, distance, distance_max, OS_API_KEY):
     return {"closures": points.to_json(),
             "min_cordon": min_cordon.to_json(),
             "max_cordon": max_cordon.to_json()}
+
+
+def get_closures(roads, centre, distance, distance_max):
+    geoms = get_geoms(roads, centre, distance, distance_max)
+    donut_roads = overlay_gdf_with_geom(roads, geoms["polygons"]["donut"])
+    graph = mm.gdf_to_nx(donut_roads)
+
+    removals = get_removals(graph,
+                            geoms['nodes']["hole"],
+                            geoms['nodes']["shell"])
+    removal_names = get_edge_info(graph, removals, ["Name", "Number"],
+                                  invalid_fill="Unnamed Road")
+
+    all_points = pyg.points(removals + [centre])
+    points_types = ["removal"] * len(removals) + ["centre"]
+    points_names = removal_names + [""]
+    points = gpd.GeoDataFrame({"geometry": all_points,
+                               "type": points_types,
+                               "names": points_names},
+                              crs="EPSG:27700").to_crs("EPSG:4326")
+    return points.to_json()
