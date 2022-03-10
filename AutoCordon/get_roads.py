@@ -1,4 +1,3 @@
-# from os_paw.wfs_api import WFS_API
 import geopandas as gpd
 from osdatahub import Extent, FeaturesAPI
 

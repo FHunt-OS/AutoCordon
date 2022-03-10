@@ -58,4 +58,4 @@ def get_closures(roads, centre, distance, distance_max):
                                "type": points_types,
                                "names": points_names},
                               crs="EPSG:27700").to_crs("EPSG:4326")
-    return points.to_json()
+    return points.to_json(drop_id=True)
