@@ -1,4 +1,4 @@
-os_paw
 momepy
 pygeos
 geopandas
+osdatahub
