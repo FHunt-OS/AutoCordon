@@ -51,7 +51,6 @@ def get_closures(roads, centre, distance, distance_max):
     removal_names = get_edge_info(graph, removals, ["Name", "Number"],
                                   invalid_fill="Unnamed Road")
     points = gpd.GeoDataFrame({"geometry": pyg.points(removals),
-                               "type": ["removal"] * len(removals),
                                "names": removal_names},
                               crs="EPSG:27700").to_crs("EPSG:4326")
     return points.to_json(drop_id=True)
